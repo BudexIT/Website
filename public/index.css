@@ -1,0 +1,68 @@
+html {
+	height: 100%;
+}
+body {
+	/* Winieta */
+	background: radial-gradient( circle, transparent 50%, black 150%), rgb(69, 69, 69);
+	height: 100%;
+	/* Czcionki */
+	font-family: 'Courier New', Courier, monospace;
+	color: #fafafa;
+}
+
+/* Linki */
+a:link, a:visited {
+	color: #f6ff00;
+	text-decoration: none;
+}
+a:hover, a:active {
+	color: #00bbff;
+	text-decoration: none;
+}
+
+/* Podkreślenie */
+.emph {
+	color: #f6ff00;
+	text-decoration: underline;
+}
+
+/* Nagłówek */
+#header {
+	border: dashed 2px white;
+	padding: 10px;
+	padding-top: 5px;
+	margin: 0;
+}
+#header * {
+	margin: 0;
+}
+
+/* Stopka */
+footer {
+	position: fixed;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	border-top: dashed 2px gray;
+	/* background: #00bbff; */
+	padding: 0;
+	padding-left: 5px;
+}
+.footer-section {
+	margin: 0;
+	padding: 0;
+	padding-right: 5px;
+	border-right: dashed 2px gray;
+	display: inline-block;
+}
+.footer-section * {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 14px;
+}
+
+/* adjustowanie przed stopką by zrobić na nią miejsce */
+#adjust {
+	height: 30px;
+}
