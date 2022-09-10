@@ -37,6 +37,12 @@ a:hover, a:active {
 	margin: 0;
 }
 
+/* pixel art */
+.pixelart {
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+}
+
 /* Stopka */
 footer {
 	position: fixed;
