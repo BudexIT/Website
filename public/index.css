@@ -1,14 +1,6 @@
-html {
-	position: absolute;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-}
+/* Ustawienia ogólne */
 body {
-	height: 100%;
-	margin: 0;
-	padding: 20px;
+	/* Tło */
 	background: #262626;
 
 	/* Czcionki */
@@ -16,7 +8,7 @@ body {
 	color: #fafafa;
 }
 
-/* Winieta */
+/* Winieta (ten czarny cień) */
 .vignette {
 	box-shadow: inset 0 0 100px #000;
 	position: fixed;

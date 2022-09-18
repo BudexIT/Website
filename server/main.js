@@ -58,6 +58,9 @@ https.createServer((()=> {
 			break;
 		}
 		default: {
+			if(req.url.slice(-1)[0] == '/') {
+				req.url = req.url.slice(0, -1);
+			}
 			if(files[req.url]) {
 				res.writeHead(200);
 				res.end(files[req.url]);
