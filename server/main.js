@@ -27,7 +27,7 @@ loadFile("/contact/index.html");
 loadFile("/index.css");
 loadFile("/favicon.ico");
 loadFile("/banner.jpg");
-loadFile("/ralsei.gif")
+loadFile("/ralsei.gif");
 
 // The HTTPS server
 https.createServer((()=> {
