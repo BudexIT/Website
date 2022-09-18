@@ -19,11 +19,12 @@ const PORT = cmd.arg("port", "p", 443);
 const HTTP_PORT = cmd.arg("http_port", "hp", 80);
 const DEV_ENV = cmd.arg("env", "e", "deploy") == "dev";
 
-// Dirty - preload files
+// Dirty - preload files (we should scan the folder for them instead)
 const files = {};
 function loadPublicFile(name) { files[name] = fs.readFileSync(`./public${name}`); }
 loadPublicFile("/index.html");
 loadPublicFile("/contact/index.html");
+loadPublicFile("/manage/index.html");
 loadPublicFile("/index.css");
 loadPublicFile("/favicon.ico");
 loadPublicFile("/banner.jpg");
@@ -45,43 +46,25 @@ https.createServer((()=> {
 	}
 })(), (req, res) => {
 	
-	// Dirty - return preloaded files
-	switch(req.url) {
-		case "/": {
-			req.url = "/index.html";
+	if(req.url.slice(-1)[0] == '/') {
+		req.url = req.url.slice(0, -1);
+	}
 
-			res.setHeader("Content-Type", mime.getType(req.url));
-			res.writeHead(200);
-			res.end(files[req.url]);
-			
-			break;
-		}
-		case "/contact/":
-		case "/contact": {
-			req.url = "/contact/index.html";
-			
-			res.setHeader("Content-Type", mime.getType(req.url));
-			res.writeHead(200);
-			res.end(files[req.url]);
-			
-			break;
-		}
-		default: {
-			if(req.url.slice(-1)[0] == '/') {
-				req.url = req.url.slice(0, -1);
-			}
-			if(files[req.url]) {
-				res.setHeader("Content-Type", mime.getType(req.url));
-				res.writeHead(200);
-				res.end(files[req.url]);
-				break;
-			}
-			res.writeHead(404);
-			res.setHeader("Content-Type", mime.getType("/404.html"));
-			res.end("<h1>404</h1>");
-			break;
-		}
-
+	let strlist = req.url.split('/');
+	if(strlist[strlist.length - 1].indexOf('.') < 0) {
+		// assume it's an index.html
+		req.url = req.url + "/index.html";
+	}
+	
+	if(files[req.url]) {
+		res.setHeader("Content-Type", mime.getType(req.url));
+		res.writeHead(200);
+		res.end(files[req.url]);
+	}
+	else {
+		res.setHeader("Content-Type", mime.getType("/404.html"));
+		res.writeHead(404);
+		res.end("<h1 style=\"\">Error 404 - Not Found</h1>");
 	}
 
 }).listen(PORT);
