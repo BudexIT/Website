@@ -21,13 +21,13 @@ const DEV_ENV = cmd.arg("env", "e", "deploy") == "dev";
 
 // Dirty - preload files
 const files = {};
-function loadFile(name) { files[name] = fs.readFileSync(`./public${name}`); }
-loadFile("/index.html");
-loadFile("/contact/index.html");
-loadFile("/index.css");
-loadFile("/favicon.ico");
-loadFile("/banner.jpg");
-loadFile("/ralsei.gif");
+function loadPublicFile(name) { files[name] = fs.readFileSync(`./public${name}`); }
+loadPublicFile("/index.html");
+loadPublicFile("/contact/index.html");
+loadPublicFile("/index.css");
+loadPublicFile("/favicon.ico");
+loadPublicFile("/banner.jpg");
+loadPublicFile("/ralsei.gif");
 
 // The HTTPS server
 https.createServer((()=> {
