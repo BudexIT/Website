@@ -1,6 +1,7 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
+const mime = require("mime")
 
 // A simple tool for parsing the command line arguments
 const cmd = require("./cmdline")
@@ -47,14 +48,22 @@ https.createServer((()=> {
 	// Dirty - return preloaded files
 	switch(req.url) {
 		case "/": {
+			req.url = "/index.html";
+
+			res.setHeader("Content-Type", mime.getType(req.url));
 			res.writeHead(200);
-			res.end(files["/index.html"]);
+			res.end(files[req.url]);
+			
 			break;
 		}
 		case "/contact/":
 		case "/contact": {
+			req.url = "/contact/index.html";
+			
+			res.setHeader("Content-Type", mime.getType(req.url));
 			res.writeHead(200);
-			res.end(files["/contact/index.html"]);
+			res.end(files[req.url]);
+			
 			break;
 		}
 		default: {
@@ -62,11 +71,13 @@ https.createServer((()=> {
 				req.url = req.url.slice(0, -1);
 			}
 			if(files[req.url]) {
+				res.setHeader("Content-Type", mime.getType(req.url));
 				res.writeHead(200);
 				res.end(files[req.url]);
 				break;
 			}
 			res.writeHead(404);
+			res.setHeader("Content-Type", mime.getType("/404.html"));
 			res.end("<h1>404</h1>");
 			break;
 		}
