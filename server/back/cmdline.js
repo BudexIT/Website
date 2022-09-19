@@ -26,7 +26,19 @@ const preparsedShort = {};
 	}
 })();
 
+// Parsed arguments based on descriptions
+const args = {};
+
 function descriptor(longName, shortName, defaultValue, description) {
+	if(preparsedLong[longName]) {
+		args[longName] = preparsedLong[longName];
+	}
+	else if(preparsedShort[shortName]) {
+		args[longName] = preparsedShort[shortName];
+	}
+	else {
+		args[longName] = defaultValue;
+	}
 	return {longName, shortName, defaultValue, description};
 }
 
@@ -44,16 +56,4 @@ function describe(descriptorList) {
 	}
 }
 
-function arg(longName, shortName, defaultValue) {
-	if(preparsedLong[longName]) {
-		return preparsedLong[longName];
-	}
-	else if(preparsedShort[shortName]) {
-		return preparsedShort[shortName];
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-module.exports = {arg, describe, descriptor};
+module.exports = {args, describe, descriptor};

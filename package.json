@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"dev": "node server/main.js -e=dev -p=8443 -hp=8880",
+		"dev": "node server/main.js -d -p=8443 -hp=8880",
 		"deploy": "node server/main.js"
 	},
 	"dependencies": {
