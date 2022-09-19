@@ -4,7 +4,7 @@ const fs = require("fs");
 const dir = require("./back/servedir")
 
 // Dirty - preload files (we should scan the folder for them instead)
-const files = files = dir.loadFiles("public/");
+const files = dir.loadFiles("public/");
 
 function handle(req, res) {
 	if(req.url.slice(-1)[0] == '/') {
