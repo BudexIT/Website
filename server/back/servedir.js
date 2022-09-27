@@ -16,6 +16,12 @@ function findFiles(where) {
 		}
 	});
 
+	// When running on windows, filenames will use "\" instead of "/".
+	// We want to use the usual "/" no matter the operating system.
+	for(let i = 0; i < list.length; i++) {
+		list[i] = list[i].replace('\\', '/');
+	}
+
 	return list;
 }
 
