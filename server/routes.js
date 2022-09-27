@@ -1,9 +1,11 @@
-const dir = require("./back/servedir")
+const dir = require("./back/fileserve")
 const rt = require("./back/routing");
+
+const manage = require("./manage")
 
 rt.addRoute("/manage", (req, res) => {
 	console.log("manage, " + req.url);
-	return dir.serveDirectory("protected/", req, res);
+	return manage(req, res);
 });
 
 rt.addRoute("/", (req, res) => {
