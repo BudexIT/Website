@@ -3,15 +3,15 @@ const rt = require("./back/routing");
 
 const manage = require("./manage")
 
-rt.addRoute("/manage", (req, res) => {
+rt.addRoute("/manage", async (req, res) => {
 	console.log("manage, " + req.url);
-	return manage(req, res);
+	return await manage(req, res);
 });
 
-rt.addRoute("/", (req, res) => {
+rt.addRoute("/", async (req, res) => {
 	console.log("index, " + req.url);
 	return dir.serveDirectory("public/", req, res);
 });
 
 
-module.exports = { useRoutes: rt.useRoutes };
+module.exports = rt.useRoutes;

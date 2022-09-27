@@ -7,7 +7,7 @@ const ssl = require("./ssl");
 const handler = require("../handler");
 
 // The HTTPS server
-https.createServer(ssl.options(), handler.handle).listen(args.port);
+https.createServer(ssl.options(), handler).listen(args.port);
 	
 // Redirect to HTTPS through HTTP
 http.createServer((req, res) => {

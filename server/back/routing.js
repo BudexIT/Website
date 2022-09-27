@@ -4,10 +4,10 @@ function addRoute(key, callback) {
 	routes[key] = callback;
 }
 
-function useRoutes(req, res) {
+async function useRoutes(req, res) {
 	for(const key in routes) {
 		if(req.url.includes(key)) {
-			if(routes[key](req, res)) {
+			if(await routes[key](req, res)) {
 				return true;
 			}
 		}
