@@ -39,15 +39,15 @@ function loadFiles(where) {
 }
 
 // Preload files on first request
-const preloaded = new Map();
+const preloadedDirs = new Map();
 
 function serveDirectory(dirname, req, res) {
 	// Upon first request, the files are cached (we don't cache in developement)
-	let files = preloaded.get(dirname);
+	let files = preloadedDirs.get(dirname);
 	if(!files || args.dev) {
 		// console.log("Cached!");
 		files = loadFiles(dirname);
-		preloaded.set(dirname, files);
+		preloadedDirs.set(dirname, files);
 	}
 
 	if(req.url.slice(-1)[0] == '/') {
@@ -72,4 +72,21 @@ function serveDirectory(dirname, req, res) {
 	}
 }
 
-module.exports = { serveDirectory };
+// Preload files on first request
+const preloadedFiles = new Map();
+
+function loadFileData(filename) {
+	let filedata = preloadedFiles.get(filename);
+	if(!filedata || args.dev) {
+		// console.log("Cached!");
+		filedata = {
+			mime: mime.getType(filename),
+			data: fs.readFileSync(filename)
+		};
+		preloadedFiles.set(filename, filedata);
+	}
+	return filedata;
+}
+
+
+module.exports = { serveDirectory, loadFileData };
