@@ -26,7 +26,7 @@ catch {
 
 		const users = {};
 
-		users[answers.name] = answers.pass;
+		users[answers.name] = { pass: answers.pass, gid: 0 };
 
 		const text = JSON.stringify(users);
 
