@@ -6,7 +6,7 @@ function addRoute(key, callback) {
 
 async function useRoutes(req, res) {
 	for(const key in routes) {
-		if(req.url.includes(key)) {
+		if(req.baseUrl.includes(key)) {
 			if(await routes[key](req, res)) {
 				return true;
 			}

@@ -50,20 +50,20 @@ function serveDirectory(dirname, req, res) {
 		preloadedDirs.set(dirname, files);
 	}
 
-	if(req.url.slice(-1)[0] == '/') {
-		req.url = req.url.slice(0, -1);
+	if(req.baseUrl.slice(-1)[0] == '/') {
+		req.baseUrl = req.baseUrl.slice(0, -1);
 	}
 
-	let strlist = req.url.split('/');
+	let strlist = req.baseUrl.split('/');
 	if(strlist[strlist.length - 1].indexOf('.') < 0) {
 		// assume it's an index.html
-		req.url = req.url + "/index.html";
+		req.baseUrl = req.baseUrl + "/index.html";
 	}
 	
-	if(files[req.url]) {
-		res.setHeader("Content-Type", mime.getType(req.url));
+	if(files[req.baseUrl]) {
+		res.setHeader("Content-Type", mime.getType(req.baseUrl));
 		res.writeHead(200);
-		res.end(files[req.url]);
+		res.end(files[req.baseUrl]);
 
 		return true;
 	}
