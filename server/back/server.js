@@ -17,7 +17,7 @@ https.createServer(ssl.options(), async (req, res) => {
 	
 // Redirect to HTTPS through HTTP
 http.createServer((req, res) => {
-	res.writeHead(301,{Location: `https://${req.headers.host}${req.baseUrl}`});
+	res.writeHead(301,{Location: `https://${req.headers.host}${req.url}`});
 	res.end();
 }).listen(args.http_port);
 

@@ -4,12 +4,12 @@ const rt = require("./back/routing");
 const manage = require("./manage")
 
 rt.addRoute("/manage", async (req, res) => {
-	console.log("manage, " + req.baseUrl);
+	console.log("manage, " + req.url);
 	return await manage(req, res);
 });
 
 rt.addRoute("/", async (req, res) => {
-	console.log("index, " + req.baseUrl);
+	console.log("index, " + req.url);
 	return dir.serveDirectory("public/", req, res);
 });
 

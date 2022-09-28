@@ -1,58 +1,62 @@
 // Code for the manager tool
 
+const fs = require("fs");
+const child = require("child_process");
+
 const dir = require("./back/fileserve");
 
 const clientList = new Map();
 
-async function getBufferData(req) {
-	const buffers = [];
+const managerViewBase = `
+	<style>
+		.container {
+			border: solid 2px rgba(255,255,255,0.8);
+			padding: 2px;
+			background: rgba(0,0,0,0.4);
+			width: 350px;
+			height: 200px;
+			overflow-y: auto;
+		}
+	</style>
+	<form method="post">
+		<div class="login_form">
+			<label for="cmd"><b>Komenda:</b></label>
+			<input type="text" placeholder="Make me do something daddy~" name="cmd" required>
+			<button type="submit">Wykonaj</button>
+		</div>
+	</form>
+	<p></p>
+`;
 
-	for await (const chunk of req) {
-		buffers.push(chunk);
+let managerView = `
+	${managerViewBase}
+	<div class="container">
+	</div>
+`;
+
+const TIMEOUT = 60*1000;
+
+function handleGet(req, res) {
+	return renderView(req, res);
+}
+function handlePost(req, res) {
+	const id = getClientId(req);
+	const client = clientList.get(id);
+
+	if(!client) {
+		return handleLogin(req, res);
+	}
+	else {
+		return handleLogon(req, res);
 	}
 
-	return Buffer.concat(buffers).toString();
 }
 
-let justSomeFun = "";
+function renderView(req, res) {
+	const id = getClientId(req);
+	const client = clientList.get(id);
 
-module.exports = async (req, res) =>  {
-	const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-	
-	if(req.method == "POST" && !clientList.get(ip)) {
-		const pass = await getBufferData(req);
-		
-		console.log(pass, "\n", req.body);
-
-		// Temporary - need to set up a login system with hashed passwords
-		if(req.body.uname == "beProsto" && req.body.psw == "Easy1234") {
-			console.log("Logged in!");
-			clientList.set(ip, {didAnything: true});
-			
-			const logout = () => {
-				if(clientList.get(ip).didAnything) {
-					clientList.get(ip).didAnything = false;
-					setTimeout(logout, 1000*60);
-				}
-				else {
-					console.log("Automatically logged out!");
-					clientList.delete(ip);
-				}
-			};
-			setTimeout(logout, 1000*60);
-		}
-	}
-	else if(req.method == "POST" && clientList.get(ip)) {
-		const command = await getBufferData(req);
-
-		console.log(command, "\n", req.body);
-		
-		justSomeFun += req.body.cmd + "<br/>";
-	}
-
-
-	if(!clientList.get(ip)) {	
-
+	if(!client) {	
 		const {mime, data} = dir.loadFileData("protected/manage/login.html");
 
 		res.setHeader("Content-Type", mime);
@@ -61,15 +65,82 @@ module.exports = async (req, res) =>  {
 
 	}
 	else {
-		
-		clientList.get(ip).didAnything = true;
-		
 		const {mime, data} = dir.loadFileData("protected/manage/logon.html");
+
+		client.didAnything = true;
 
 		res.setHeader("Content-Type", mime);
 		res.writeHead(200);
-		res.end(data + justSomeFun);
+		res.end(data.toString().replace("<MANAGER_VIEW/>", managerView));
 	}
 
 	return true;
+}
+
+function handleLogin(req, res) {
+	const id = getClientId(req);
+
+	const users = JSON.parse(fs.readFileSync("private/users.json"));
+
+	const inName = req.body.uname;
+	const inPass = req.body.psw;
+
+	if(users[inName] && users[inName].pass == inPass) {
+		console.log(`${inName} logged in`);
+
+		clientList.set(id, {didAnything: true});
+		
+		const logout = () => {
+			if(clientList.get(id).didAnything) {
+				clientList.get(id).didAnything = false;
+				setTimeout(logout, TIMEOUT);
+			}
+			else {
+				console.log("Automatically logged out!");
+				clientList.delete(id);
+			}
+		};
+		setTimeout(logout, TIMEOUT);
+	}
+
+	return renderView(req, res);
+}
+
+let insideContainer = ``;
+function handleLogon(req, res) {
+	child.exec(req.body.cmd, (error, stdout, stderr) => {
+		if(error) {
+			console.log(`error: ${error.message}`);
+		}
+		if(stderr) {
+			console.log(`stderr: ${stderr}`);
+			insideContainer += '<p style="color: red;">' + stderr + '</p>';
+		}
+		console.log(`stdout: ${stdout}`);
+		insideContainer += "<p>" + stdout + "</p>";
+		
+		managerView = `
+			${managerViewBase}
+			<div class="container">
+				${insideContainer}
+			</div>
+		`;
+
+		renderView(req, res);
+	});
+
+	return true;
+}
+
+module.exports = async (req, res) =>  {
+	await loadRequestBody(req);
+
+	switch(req.method) {
+		case "POST": return handlePost(req, res);
+		case "GET": return handleGet(req, res);
+		default: return false;
+	}
 };
+
+function getClientId(req) { return req.headers['x-forwarded-for'] || req.connection.remoteAddress + ":" + req.headers['user-agent']; }
+async function loadRequestBody(req) { const buffers = []; for await (const chunk of req) { buffers.push(chunk); } return Buffer.concat(buffers).toString(); }
