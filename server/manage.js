@@ -40,10 +40,13 @@ module.exports = async (req, res) =>  {
 	}
 	else if(req.method == "POST" && clientList.get(ip)) {
 		const command = await getBufferData(req);
-		
-		console.log(command);
 
-		clientList.get(ip).didAnything = true;
+		const formData = new FormData(command);
+		
+		const data = {};
+		formData.forEach((value, key) => (data[key] = value));
+
+		console.log(data);
 	}
 
 
