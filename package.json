@@ -1,7 +1,7 @@
 {
 	"scripts": {
-		"dev": "node server/main.js -d -p=8443 -hp=8880",
-		"deploy": "node server/main.js"
+		"dev": "node server/main.mjs -d -p=8443 -hp=8880",
+		"deploy": "node server/main.mjs"
 	},
 	"dependencies": {
 		"body-parser": "^1.20.0",
