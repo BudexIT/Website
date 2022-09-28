@@ -14,14 +14,18 @@ async function getBufferData(req) {
 	return Buffer.concat(buffers).toString();
 }
 
+let justSomeFun = "";
+
 module.exports = async (req, res) =>  {
 	const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	
 	if(req.method == "POST" && !clientList.get(ip)) {
 		const pass = await getBufferData(req);
 		
+		console.log(pass, "\n", req.body);
+
 		// Temporary - need to set up a login system with hashed passwords
-		if(pass == "uname=beProsto&psw=Easy1234") {
+		if(req.body.uname == "beProsto" && req.body.psw == "Easy1234") {
 			console.log("Logged in!");
 			clientList.set(ip, {didAnything: true});
 			
@@ -41,12 +45,9 @@ module.exports = async (req, res) =>  {
 	else if(req.method == "POST" && clientList.get(ip)) {
 		const command = await getBufferData(req);
 
-		const formData = new FormData(command);
+		console.log(command, "\n", req.body);
 		
-		const data = {};
-		formData.forEach((value, key) => (data[key] = value));
-
-		console.log(data);
+		justSomeFun += req.body.cmd + "<br/>";
 	}
 
 
@@ -67,7 +68,7 @@ module.exports = async (req, res) =>  {
 
 		res.setHeader("Content-Type", mime);
 		res.writeHead(200);
-		res.end(data);
+		res.end(data + justSomeFun);
 	}
 
 	return true;

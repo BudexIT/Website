@@ -4,6 +4,7 @@
 		"deploy": "node server/main.js"
 	},
 	"dependencies": {
+		"body-parser": "^1.20.0",
 		"mime": "^3.0.0"
 	}
 }
