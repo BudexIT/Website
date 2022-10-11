@@ -1,14 +1,14 @@
 // Code for the chat
 
 const fs = require("fs");
-const ws = require('ws');
+// const ws = require('ws');
 
 const dir = require("./back/fileserve");
 const args = require("./args")
 
-const wsServer = new ws.Server({
-	port: args.http_port
-});
+// const wsServer = new ws.Server({
+// 	port: args.http_port
+// });
 
 function handleGet(req, res) {
 	return false;
